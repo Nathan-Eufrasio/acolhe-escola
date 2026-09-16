@@ -233,6 +233,13 @@ button, input {
   letter-spacing: -0.06em;
 }
 
+.login-hint {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
 .login-form {
   display: grid;
   gap: 18px;

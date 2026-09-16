@@ -207,7 +207,7 @@ logoutButton.addEventListener('click', closeDashboard);
 
 loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-  const login = document.getElementById('admin-login').value.trim();
+  const login = document.getElementById('admin-login').value.trim().toLowerCase();
   const password = document.getElementById('admin-password').value;
 
   try {

@@ -36,17 +36,18 @@
           <div class="card-head">
             <span class="small-label">Acesso seguro</span>
             <h3>Entrar</h3>
+            <p class="login-hint">Acesso local: usuário <strong>admin</strong> e senha <strong>admin</strong>.</p>
           </div>
 
           <form id="admin-login-form" class="login-form">
             <div>
               <label for="admin-login">Login</label>
-              <input id="admin-login" name="login" type="text" placeholder="admin" required />
+              <input id="admin-login" name="login" type="text" placeholder="admin" autocomplete="username" autocapitalize="none" required />
             </div>
 
             <div>
               <label for="admin-password">Senha</label>
-              <input id="admin-password" name="password" type="password" placeholder="••••••••" required />
+              <input id="admin-password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required />
             </div>
 
             <button type="submit" class="primary-btn">Entrar no painel</button>
