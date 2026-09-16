@@ -4,12 +4,6 @@ const consultForm = document.getElementById('consult-form');
 const trackingCodeElement = document.getElementById('tracking-code');
 const consultResult = document.getElementById('consult-result');
 const consultCodeInput = document.getElementById('consult-code');
-const supportTimeGrid = document.getElementById('support-time-grid');
-const selectedTimeLabel = document.getElementById('selected-time-label');
-const confirmSupportButton = document.getElementById('confirm-support');
-const confirmedSupportTime = document.getElementById('confirmed-support-time');
-
-let selectedSupportTime = '';
 
 function showScreen(screenId) {
   screens.forEach((screen) => screen.classList.add('hidden'));
@@ -64,7 +58,7 @@ async function handleConsultSubmit(event) {
   const code = consultCodeInput.value.trim().toUpperCase();
   if (!code) {
     consultResult.classList.remove('hidden');
-    consultResult.textContent = 'Informe um código válido para consultar o status.';
+    consultResult.innerHTML = '<p>Informe um código válido para consultar o status.</p>';
     return;
   }
 
@@ -72,82 +66,40 @@ async function handleConsultSubmit(event) {
   if (!response.ok) {
     const error = await response.json().catch(() => null);
     consultResult.classList.remove('hidden');
-    consultResult.innerHTML = `<p class="text-sm text-slate-500">${error?.message || 'Código não encontrado.'}</p>`;
+    consultResult.innerHTML = `<p>${error?.message || 'Código não encontrado.'}</p>`;
     return;
   }
 
   const report = await response.json();
+  const statusMap = {
+    Recebida: { label: 'Recebida', tone: 'rgba(59, 130, 246, 0.12)', color: '#1d4ed8' },
+    'Em análise': { label: 'Em análise', tone: 'rgba(245, 158, 11, 0.14)', color: '#b45309' },
+    Resolvida: { label: 'Resolvida', tone: 'rgba(16, 185, 129, 0.14)', color: '#047857' },
+    Arquivada: { label: 'Arquivada', tone: 'rgba(107, 114, 128, 0.14)', color: '#374151' },
+  };
+
+  const statusInfo = statusMap[report.status] || {
+    label: report.status || 'Status não informado',
+    tone: 'rgba(15, 23, 42, 0.08)',
+    color: '#0f172a',
+  };
+
   consultResult.classList.remove('hidden');
   consultResult.innerHTML = `
-    <p class="text-sm text-slate-500">Código encontrado:</p>
-    <p class="mt-2 text-lg font-semibold text-slate-900">${report.code}</p>
-    <p class="mt-4 text-sm text-slate-600">Status atual:</p>
-    <p class="mt-2 rounded-3xl bg-white p-4 text-base font-semibold text-slate-900">${report.status}</p>
-    <p class="mt-3 text-xs text-slate-500">Última atualização: ${new Date(report.created_at).toLocaleDateString('pt-BR')}</p>
+    <p><strong>Código:</strong> ${report.code}</p>
+    <p style="margin-top: 10px;"><strong>Escola:</strong> ${report.school || 'Não informada'}</p>
+    <div style="margin-top: 14px; border-radius: 16px; padding: 12px 14px; background: ${statusInfo.tone}; color: ${statusInfo.color}; font-weight: 700;">${statusInfo.label}</div>
+    <p style="margin-top: 12px;"><strong>Última atualização:</strong> ${new Date(report.created_at).toLocaleDateString('pt-BR')}</p>
   `;
-}
-
-function selectSupportTime(event) {
-  const button = event.target.closest('.support-time-btn');
-  if (!button) return;
-
-  selectedSupportTime = button.dataset.time;
-  selectedTimeLabel.textContent = `Horário selecionado: ${selectedSupportTime}`;
-
-  document.querySelectorAll('.support-time-btn').forEach((item) => {
-    item.classList.remove('border-blue-500', 'bg-blue-50', 'text-blue-800');
-    item.classList.add('border-slate-200', 'bg-slate-50', 'text-slate-700');
-  });
-
-  button.classList.remove('border-slate-200', 'bg-slate-50', 'text-slate-700');
-  button.classList.add('border-blue-500', 'bg-blue-50', 'text-blue-800');
-}
-
-async function handleSupportConfirm() {
-  if (!selectedSupportTime) {
-    showError('Selecione um horário antes de confirmar.');
-    return;
-  }
-
-  const response = await fetch('/api/supports', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ time: selectedSupportTime }),
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => null);
-    showError(error?.message || 'Erro ao agendar apoio psicológico.');
-    return;
-  }
-
-  const schedule = await response.json();
-  confirmedSupportTime.textContent = schedule.time;
-  showScreen('support-success-screen');
 }
 
 function bindEvents() {
   document.getElementById('navigate-form').addEventListener('click', () => showScreen('form-screen'));
-  document.getElementById('navigate-support').addEventListener('click', () => showScreen('support-screen'));
   document.getElementById('navigate-consult').addEventListener('click', () => showScreen('consult-screen'));
   document.getElementById('back-home-from-form').addEventListener('click', () => showScreen('home-screen'));
-  document.getElementById('back-home-from-support').addEventListener('click', () => {
-    selectedSupportTime = '';
-    document.querySelectorAll('.support-time-btn').forEach((item) => {
-      item.classList.remove('border-blue-500', 'bg-blue-50', 'text-blue-800');
-      item.classList.add('border-slate-200', 'bg-slate-50', 'text-slate-700');
-    });
-    selectedTimeLabel.textContent = 'Nenhum horário selecionado';
-    showScreen('home-screen');
-  });
+  document.getElementById('back-home-from-consult').addEventListener('click', () => showScreen('home-screen'));
   document.getElementById('back-home-from-success').addEventListener('click', () => showScreen('home-screen'));
-  document.getElementById('back-home-from-support-success').addEventListener('click', () => showScreen('home-screen'));
   document.getElementById('consult-from-success').addEventListener('click', () => showScreen('consult-screen'));
-  document.getElementById('consult-from-support-success').addEventListener('click', () => showScreen('consult-screen'));
-  supportTimeGrid.addEventListener('click', selectSupportTime);
-  confirmSupportButton.addEventListener('click', handleSupportConfirm);
   reportForm.addEventListener('submit', handleFormSubmit);
   consultForm.addEventListener('submit', handleConsultSubmit);
 }

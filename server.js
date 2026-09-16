@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const multer = require('multer');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
@@ -10,6 +11,10 @@ const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
 const DB_PATH = path.join(DATA_DIR, 'reports.db');
+const ADMIN_LOGIN = process.env.ADMIN_LOGIN || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+const adminTokens = new Set();
+const allowedStatuses = new Set(['Recebida', 'Em análise', 'Resolvida', 'Arquivada']);
 
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -59,13 +64,6 @@ CREATE TABLE IF NOT EXISTS reports (
   evidence TEXT,
   created_at TEXT
 );
-
-CREATE TABLE IF NOT EXISTS supports (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  time TEXT,
-  status TEXT,
-  created_at TEXT
-);
 `;
 
 db.exec(initSql, (err) => {
@@ -88,6 +86,74 @@ function generateTrackingCode() {
 
   return code;
 }
+
+function requireAdmin(req, res, next) {
+  const authorization = req.get('authorization') || '';
+  const token = authorization.startsWith('Bearer ') ? authorization.slice(7) : '';
+
+  if (!token || !adminTokens.has(token)) {
+    return res.status(401).json({ message: 'Acesso administrativo não autorizado.' });
+  }
+
+  return next();
+}
+
+app.post('/api/admin/login', (req, res) => {
+  const { login, password } = req.body;
+
+  if (login !== ADMIN_LOGIN || password !== ADMIN_PASSWORD) {
+    return res.status(401).json({ message: 'Login ou senha inválidos.' });
+  }
+
+  const token = crypto.randomBytes(32).toString('hex');
+  adminTokens.add(token);
+  return res.json({ token });
+});
+
+app.post('/api/admin/logout', requireAdmin, (req, res) => {
+  const token = (req.get('authorization') || '').slice(7);
+  adminTokens.delete(token);
+  return res.json({ message: 'Sessão encerrada.' });
+});
+
+app.get('/api/admin/reports', requireAdmin, (req, res) => {
+  const query = `
+    SELECT id, code, school, incident, description, status, evidence, created_at
+    FROM reports
+    ORDER BY datetime(created_at) DESC
+  `;
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error('Erro ao listar denúncias:', err.message);
+      return res.status(500).json({ message: 'Erro interno ao listar denúncias.' });
+    }
+
+    return res.json(rows);
+  });
+});
+
+app.patch('/api/admin/reports/:id/status', requireAdmin, (req, res) => {
+  const { status } = req.body;
+  const reportId = Number.parseInt(req.params.id, 10);
+
+  if (!Number.isInteger(reportId) || !allowedStatuses.has(status)) {
+    return res.status(400).json({ message: 'Status ou denúncia inválidos.' });
+  }
+
+  db.run('UPDATE reports SET status = ? WHERE id = ?', [status, reportId], function updateReport(err) {
+    if (err) {
+      console.error('Erro ao atualizar denúncia:', err.message);
+      return res.status(500).json({ message: 'Erro interno ao atualizar denúncia.' });
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).json({ message: 'Denúncia não encontrada.' });
+    }
+
+    return res.json({ message: 'Status atualizado com sucesso.' });
+  });
+});
 
 app.post('/api/reports', upload.single('attachment'), (req, res) => {
   const { school, incident, description } = req.body;
@@ -127,37 +193,6 @@ app.get('/api/reports/:code', (req, res) => {
     }
 
     return res.json(row);
-  });
-});
-
-app.post('/api/supports', (req, res) => {
-  const { time } = req.body;
-  if (!time) {
-    return res.status(400).json({ message: 'Selecione um horário.' });
-  }
-
-  const status = 'Agendado';
-  const createdAt = new Date().toISOString();
-  const query = 'INSERT INTO supports (time, status, created_at) VALUES (?, ?, ?)';
-
-  db.run(query, [time, status, createdAt], function (err) {
-    if (err) {
-      console.error('Erro ao agendar apoio:', err.message);
-      return res.status(500).json({ message: 'Erro interno ao agendar apoio psicológico.' });
-    }
-
-    return res.json({ time, status, createdAt });
-  });
-});
-
-app.get('/api/supports', (req, res) => {
-  const query = 'SELECT id, time, status, created_at FROM supports ORDER BY created_at DESC LIMIT 20';
-  db.all(query, [], (err, rows) => {
-    if (err) {
-      console.error('Erro ao buscar agendamentos:', err.message);
-      return res.status(500).json({ message: 'Erro interno ao buscar agendamentos.' });
-    }
-    return res.json(rows);
   });
 });
 

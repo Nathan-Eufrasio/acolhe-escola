@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel Administrativo | Acolhe Escola</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/admin.css" />
+  </head>
+  <body>
+    <div class="admin-shell">
+      <header class="admin-header">
+        <div class="brand-wrap">
+          <img src="assets/logo-acolhe-escola.svg" alt="Logo Acolhe Escola" class="brand-logo" />
+        </div>
+        <div class="header-actions">
+          <span class="chip chip-success">Sistema ativo</span>
+        </div>
+      </header>
+
+      <section id="login-panel" class="login-panel">
+        <div class="login-visual">
+          <div class="login-icon">🔐</div>
+          <h2>Área do administrador</h2>
+          <p>Faça login para visualizar relatos, acompanhar pendências e responder a alertas institucionais.</p>
+          <ul>
+            <li>Relatos anônimos</li>
+            <li>Controle por instituição</li>
+            <li>Gestão de alertas</li>
+          </ul>
+        </div>
+
+        <div class="login-card">
+          <div class="card-head">
+            <span class="small-label">Acesso seguro</span>
+            <h3>Entrar</h3>
+          </div>
+
+          <form id="admin-login-form" class="login-form">
+            <div>
+              <label for="admin-login">Login</label>
+              <input id="admin-login" name="login" type="text" placeholder="admin" required />
+            </div>
+
+            <div>
+              <label for="admin-password">Senha</label>
+              <input id="admin-password" name="password" type="password" placeholder="••••••••" required />
+            </div>
+
+            <button type="submit" class="primary-btn">Entrar no painel</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="admin-dashboard" class="dashboard hidden">
+        <aside class="sidebar">
+          <div class="sidebar-brand">
+            <div class="mini-brand">A</div>
+            <div>
+              <p class="eyebrow">Admin</p>
+              <strong>Acolhe Escola</strong>
+            </div>
+          </div>
+
+          <nav>
+            <button class="nav-item active" type="button" data-target="overview">Visão geral</button>
+            <button class="nav-item" type="button" data-target="reports">Relatos</button>
+            <button class="nav-item" type="button" data-target="institutions">Instituições</button>
+            <button class="nav-item" type="button" data-target="alerts">Alertas</button>
+            <button class="nav-item" type="button" data-target="settings">Configurações</button>
+          </nav>
+        </aside>
+
+        <main class="content">
+          <div class="content-header">
+            <div>
+              <p class="eyebrow">Dashboard</p>
+              <h2>Resumo da rede escolar</h2>
+            </div>
+            <button id="logout-button" type="button" class="secondary-btn">Sair</button>
+          </div>
+
+          <section class="content-section" data-section="overview">
+            <section class="welcome-panel">
+              <div>
+                <p class="eyebrow">Menu inicial</p>
+                <h3>Bem-vindo(a), gestor escolar</h3>
+                <p>Centralize relatos, acompanhe alertas e fortaleça a segurança e o acolhimento em sua rede.</p>
+              </div>
+              <div class="welcome-tools">
+                <button type="button" class="tool-pill">Relatos</button>
+                <button type="button" class="tool-pill">Instituições</button>
+                <button type="button" class="tool-pill">Alertas</button>
+              </div>
+            </section>
+
+            <div class="stats-grid">
+              <article class="stat-card accent-blue">
+                <div class="stat-top">
+                  <span class="stat-icon">📊</span>
+                  <span class="stat-tag">Total</span>
+                </div>
+                <strong id="stat-total">0</strong>
+                <p>Relatos registrados</p>
+              </article>
+
+              <article class="stat-card accent-gold">
+                <div class="stat-top">
+                  <span class="stat-icon">⏳</span>
+                  <span class="stat-tag">Pendentes</span>
+                </div>
+                <strong id="stat-pending">0</strong>
+                <p>Aguardando análise</p>
+              </article>
+
+              <article class="stat-card accent-green">
+                <div class="stat-top">
+                  <span class="stat-icon">✅</span>
+                  <span class="stat-tag">Resolvidos</span>
+                </div>
+                <strong id="stat-resolved">0</strong>
+                <p>Casos encerrados</p>
+              </article>
+
+              <article class="stat-card accent-red">
+                <div class="stat-top">
+                  <span class="stat-icon">⚠️</span>
+                  <span class="stat-tag">Alertas</span>
+                </div>
+                <strong id="stat-alerts">0</strong>
+                <p>Alertas ativos</p>
+              </article>
+            </div>
+
+            <div class="panel-grid">
+              <section class="data-panel large-panel">
+                <div class="panel-head">
+                  <h3>Relatos recentes</h3>
+                  <button type="button" class="ghost-btn">Exportar</button>
+                </div>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Escola</th>
+                        <th>Incidente</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="reports-table-body"></tbody>
+                  </table>
+                </div>
+              </section>
+
+              <aside class="data-panel side-panel">
+                <div class="panel-head">
+                  <h3>Ações rápidas</h3>
+                </div>
+
+                <div class="quick-actions">
+                  <button type="button" class="action-card">
+                    <span class="action-icon">📥</span>
+                    <div>
+                      <strong>Receber relatos</strong>
+                      <small>Visualizar novos registros</small>
+                    </div>
+                  </button>
+
+                  <button type="button" class="action-card">
+                    <span class="action-icon">🧾</span>
+                    <div>
+                      <strong>Gerar relatório</strong>
+                      <small>Resumo da semana</small>
+                    </div>
+                  </button>
+
+                  <button type="button" class="action-card">
+                    <span class="action-icon">📣</span>
+                    <div>
+                      <strong>Alertas</strong>
+                      <small>Notificações urgentes</small>
+                    </div>
+                  </button>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section class="content-section hidden" data-section="reports">
+            <div class="subpage-card">
+              <div class="panel-head">
+                <h3>Gestão de relatos</h3>
+                <button type="button" class="ghost-btn" data-refresh-reports>Atualizar</button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Escola</th>
+                      <th>Incidente</th>
+                      <th>Status</th>
+                      <th>Data</th>
+                    </tr>
+                  </thead>
+                  <tbody id="all-reports-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section class="content-section hidden" data-section="institutions">
+            <div class="subpage-card">
+              <div class="panel-head">
+                <h3>Instituições vinculadas</h3>
+              </div>
+              <div id="institutions-list" class="subpage-list"></div>
+            </div>
+          </section>
+
+          <section class="content-section hidden" data-section="alerts">
+            <div class="subpage-card">
+              <div class="panel-head">
+                <h3>Alertas críticos</h3>
+              </div>
+              <div id="alerts-list" class="subpage-list"></div>
+            </div>
+          </section>
+
+          <section class="content-section hidden" data-section="settings">
+            <div class="subpage-card">
+              <div class="panel-head">
+                <h3>Configurações gerais</h3>
+              </div>
+              <div class="settings-box">
+                <p class="settings-description">As credenciais administrativas são definidas no servidor pelas variáveis <strong>ADMIN_LOGIN</strong> e <strong>ADMIN_PASSWORD</strong>.</p>
+                <p class="settings-description">Os relatos exibidos neste painel são carregados diretamente do banco SQLite do sistema.</p>
+              </div>
+            </div>
+          </section>
+        </main>
+      </section>
+    </div>
+
+    <script src="js/admin.js"></script>
+  </body>
+</html>
