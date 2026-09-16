@@ -12,9 +12,17 @@ const toolPills = document.querySelectorAll('.tool-pill');
 const actionCards = document.querySelectorAll('.action-card');
 const exportButton = document.querySelector('.ghost-btn');
 const refreshButton = document.querySelector('[data-refresh-reports]');
+const API_BASE_URL = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+  && window.location.port !== '3000'
+  ? 'http://localhost:3000'
+  : '';
 
 let authToken = '';
 let reports = [];
+
+function apiUrl(path) {
+  return `${API_BASE_URL}${path}`;
+}
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>'"]/g, (character) => ({
@@ -103,7 +111,7 @@ function renderAlerts() {
 }
 
 async function loadReports() {
-  const response = await fetch('/api/admin/reports', {
+  const response = await fetch(apiUrl('/api/admin/reports'), {
     headers: { Authorization: `Bearer ${authToken}` },
   });
 
@@ -111,12 +119,17 @@ async function loadReports() {
     throw new Error('Não foi possível carregar os relatos.');
   }
 
-  reports = await response.json();
+  const data = await response.json().catch(() => null);
+  if (!data || !Array.isArray(data)) {
+    throw new Error('O servidor retornou uma resposta inválida. Abra o projeto pelo servidor Node.');
+  }
+
+  reports = data;
   renderReports();
 }
 
 async function updateReportStatus(reportId, status) {
-  const response = await fetch(`/api/admin/reports/${reportId}/status`, {
+  const response = await fetch(apiUrl(`/api/admin/reports/${reportId}/status`), {
     method: 'PATCH',
     headers: {
       Authorization: `Bearer ${authToken}`,
@@ -170,7 +183,7 @@ function setActiveSection(target) {
 
 function closeDashboard() {
   if (authToken) {
-    fetch('/api/admin/logout', { method: 'POST', headers: { Authorization: `Bearer ${authToken}` } }).catch(() => {});
+    fetch(apiUrl('/api/admin/logout'), { method: 'POST', headers: { Authorization: `Bearer ${authToken}` } }).catch(() => {});
   }
   authToken = '';
   adminDashboard.classList.add('hidden');
@@ -211,13 +224,15 @@ loginForm.addEventListener('submit', async (event) => {
   const password = document.getElementById('admin-password').value;
 
   try {
-    const response = await fetch('/api/admin/login', {
+    const response = await fetch(apiUrl('/api/admin/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ login, password }),
     });
-    const data = await response.json();
+    const data = await response.json().catch(() => null);
+    if (!data) throw new Error('O servidor não retornou uma resposta válida. Inicie o projeto com npm start.');
     if (!response.ok) throw new Error(data.message || 'Credenciais inválidas.');
+    if (!data.token) throw new Error('Resposta de login inválida. Inicie o projeto com npm start.');
     authToken = data.token;
     await loadReports();
     openDashboard();

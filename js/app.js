@@ -4,6 +4,14 @@ const consultForm = document.getElementById('consult-form');
 const trackingCodeElement = document.getElementById('tracking-code');
 const consultResult = document.getElementById('consult-result');
 const consultCodeInput = document.getElementById('consult-code');
+const API_BASE_URL = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+  && window.location.port !== '3000'
+  ? 'http://localhost:3000'
+  : '';
+
+function apiUrl(path) {
+  return `${API_BASE_URL}${path}`;
+}
 
 function showScreen(screenId) {
   screens.forEach((screen) => screen.classList.add('hidden'));
@@ -36,7 +44,7 @@ async function handleFormSubmit(event) {
 
   try {
     const formData = new FormData(reportForm);
-    const response = await fetch('/api/reports', {
+    const response = await fetch(apiUrl('/api/reports'), {
       method: 'POST',
       body: formData,
     });
@@ -65,15 +73,24 @@ async function handleConsultSubmit(event) {
     return;
   }
 
-  const response = await fetch(`/api/reports/${code}`);
-  if (!response.ok) {
-    const error = await response.json().catch(() => null);
-    consultResult.classList.remove('hidden');
-    consultResult.innerHTML = `<p>${error?.message || 'Código não encontrado.'}</p>`;
-    return;
-  }
+  try {
+    const response = await fetch(apiUrl(`/api/reports/${code}`));
+    const data = await response.json().catch(() => null);
+    if (!response.ok) {
+      consultResult.classList.remove('hidden');
+      consultResult.innerHTML = `<p>${data?.message || 'Código não encontrado.'}</p>`;
+      return;
+    }
 
-  const report = await response.json();
+    if (!data) throw new Error('Resposta inválida do servidor.');
+    renderConsultResult(data);
+  } catch (error) {
+    consultResult.classList.remove('hidden');
+    consultResult.innerHTML = '<p>Não foi possível conectar ao servidor. Inicie o projeto com <strong>npm start</strong> e tente novamente.</p>';
+  }
+}
+
+function renderConsultResult(report) {
   const statusMap = {
     Recebida: { label: 'Recebida', tone: 'rgba(59, 130, 246, 0.12)', color: '#1d4ed8' },
     'Em análise': { label: 'Em análise', tone: 'rgba(245, 158, 11, 0.14)', color: '#b45309' },
