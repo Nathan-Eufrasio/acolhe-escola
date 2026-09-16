@@ -196,6 +196,19 @@ app.get('/api/reports/:code', (req, res) => {
   });
 });
 
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({ message: 'O arquivo excede o limite de 10 MB.' });
+    }
+
+    return res.status(400).json({ message: 'Não foi possível processar o arquivo enviado.' });
+  }
+
+  console.error('Erro inesperado na API:', error);
+  return res.status(500).json({ message: 'Erro interno do servidor.' });
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor iniciado em http://localhost:${PORT}`);
 });

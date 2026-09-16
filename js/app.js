@@ -34,22 +34,25 @@ async function handleFormSubmit(event) {
     return;
   }
 
-  const formData = new FormData(reportForm);
-  const response = await fetch('/api/reports', {
-    method: 'POST',
-    body: formData,
-  });
+  try {
+    const formData = new FormData(reportForm);
+    const response = await fetch('/api/reports', {
+      method: 'POST',
+      body: formData,
+    });
 
-  if (!response.ok) {
-    const error = await response.json().catch(() => null);
-    showError(error?.message || 'Erro ao enviar denúncia.');
-    return;
+    const data = await response.json().catch(() => null);
+    if (!response.ok) {
+      showError(data?.message || 'Não foi possível enviar a denúncia. Tente novamente.');
+      return;
+    }
+
+    reportForm.reset();
+    trackingCodeElement.textContent = data.code;
+    showScreen('success-screen');
+  } catch (error) {
+    showError('Não foi possível conectar ao servidor. Verifique se o sistema está online e tente novamente.');
   }
-
-  const data = await response.json();
-  reportForm.reset();
-  trackingCodeElement.textContent = data.code;
-  showScreen('success-screen');
 }
 
 async function handleConsultSubmit(event) {
