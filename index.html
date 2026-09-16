@@ -514,6 +514,22 @@
       text-align: center;
     }
 
+    .admin-access {
+      display: block;
+      width: fit-content;
+      margin: 24px auto 0;
+      color: rgba(93, 107, 134, 0.72);
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .admin-access:hover,
+    .admin-access:focus-visible {
+      color: var(--primary-strong);
+    }
+
     @media (max-width: 420px) {
       .page-shell {
         padding-left: 14px;
@@ -683,6 +699,8 @@
         </div>
       </section>
     </main>
+
+    <a class="admin-access" href="admin.html">Acesso administrativo</a>
   </div>
 
   <script src="js/app.js"></script>
