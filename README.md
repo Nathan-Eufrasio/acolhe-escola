@@ -50,6 +50,8 @@ O objetivo deste projeto é oferecer aos estudantes um canal seguro e confidenci
 
 ## Como rodar localmente
 
+No Windows, basta dar dois cliques em `Iniciar Acolhe Escola.bat`. Ele inicia o servidor e abre o navegador. Mantenha aberta a janela do servidor enquanto estiver usando o sistema.
+
 1. Abra a pasta do projeto (`d:\programacao\acolhe-escola`) em um terminal.
 2. Execute `npm install` para instalar as dependências.
 3. Execute `npm start` para iniciar o servidor.
