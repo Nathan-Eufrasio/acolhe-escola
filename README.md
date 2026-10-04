@@ -18,8 +18,11 @@ O objetivo deste projeto é oferecer aos estudantes um canal seguro e confidenci
 - `js/app.js` - Lógica de navegação entre telas, geração de código de acompanhamento, envio de denúncias e consulta de status.
 - `admin.html` - Área administrativa para acompanhar e atualizar relatos reais.
 - `js/admin.js` - Autenticação, carregamento do dashboard, atualização de status e exportação CSV.
+- `secretaria.html` - Painel da Secretaria com indicadores por escola e consulta dos detalhes dos relatos.
+- `js/secretaria.js` - Autenticação, filtros, indicadores da rede e visualização de detalhes.
 - `css/admin.css` - Estilos responsivos da área administrativa.
 - `server.js` - API Express, autenticação administrativa, SQLite e upload de evidências.
+- `render.yaml` - Blueprint para criar o serviço Node.js no Render com armazenamento persistente.
 - `README.md` - Documentação resumida do projeto.
 
 ## Estrutura das telas
@@ -65,6 +68,8 @@ npm start
 
 Não publique credenciais reais no código ou no README.
 
+O painel da Secretaria fica em `http://localhost:3000/secretaria.html`. No ambiente local, o acesso padrão usa `secretaria` / `secretaria`. Em ambientes publicados, defina também `SECRETARIA_LOGIN` e `SECRETARIA_PASSWORD` como variáveis secretas.
+
 ## Backend e banco de dados
 
 - O projeto possui um backend Node.js com Express.
@@ -79,7 +84,20 @@ Não publique credenciais reais no código ou no README.
 - `POST /api/admin/logout` - Encerra a sessão administrativa.
 - `GET /api/admin/reports` - Lista os relatos reais do banco; exige token Bearer.
 - `PATCH /api/admin/reports/:id/status` - Atualiza o status de um relato; exige token Bearer.
+- `POST /api/secretaria/login` e `POST /api/secretaria/logout` - Abrem e encerram uma sessão da Secretaria.
+- `GET /api/secretaria/reports` - Lista os relatos da rede para acompanhamento; exige token da Secretaria.
 
 ## Publicação
 
-O projeto precisa de um host Node.js com armazenamento persistente para o arquivo SQLite e para a pasta `uploads/`. Configure `ADMIN_LOGIN` e `ADMIN_PASSWORD` como variáveis secretas no serviço escolhido, como Render ou Railway. Faça backup de `data/reports.db` e `uploads/` antes de trocar o ambiente de produção.
+O projeto precisa de um host Node.js com armazenamento persistente para o arquivo SQLite e para os anexos. No Render, crie um Web Service conectado ao repositório privado e use:
+
+- Build command: `npm install`
+- Start command: `npm start`
+- Persistent Disk mount path: `/var/data`
+- `NODE_ENV`: `production`
+- `STORAGE_DIR`: `/var/data`
+- `ADMIN_LOGIN`, `ADMIN_PASSWORD`, `SECRETARIA_LOGIN` e `SECRETARIA_PASSWORD`: credenciais fortes configuradas como variáveis secretas.
+
+O servidor salva o banco em `/var/data/data/reports.db` e os anexos em `/var/data/uploads/`. Em produção, ele não inicia se qualquer uma das quatro credenciais estiver ausente. Não configure `PORT`; o serviço fornece essa variável automaticamente.
+
+O disco persistente começa vazio. Para manter dados já existentes, faça backup de `data/reports.db` e `uploads/` e transfira-os para as pastas correspondentes no disco persistente antes de usar a aplicação com os novos registros. Não envie o banco, anexos ou credenciais ao GitHub.

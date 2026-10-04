@@ -8,12 +8,26 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_DIR = path.join(__dirname, 'data');
-const UPLOAD_DIR = path.join(__dirname, 'uploads');
+const STORAGE_DIR = process.env.STORAGE_DIR || __dirname;
+const DATA_DIR = path.join(STORAGE_DIR, 'data');
+const UPLOAD_DIR = path.join(STORAGE_DIR, 'uploads');
 const DB_PATH = path.join(DATA_DIR, 'reports.db');
+const requiredProductionVariables = ['ADMIN_LOGIN', 'ADMIN_PASSWORD', 'SECRETARIA_LOGIN', 'SECRETARIA_PASSWORD'];
+const missingProductionVariables = process.env.NODE_ENV === 'production'
+  ? requiredProductionVariables.filter((name) => !process.env[name]?.trim())
+  : [];
+
+if (missingProductionVariables.length) {
+  console.error(`Variáveis obrigatórias ausentes em produção: ${missingProductionVariables.join(', ')}`);
+  process.exit(1);
+}
+
 const ADMIN_LOGIN = process.env.ADMIN_LOGIN || 'admin';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+const SECRETARIA_LOGIN = process.env.SECRETARIA_LOGIN || 'secretaria';
+const SECRETARIA_PASSWORD = process.env.SECRETARIA_PASSWORD || 'secretaria';
 const adminTokens = new Set();
+const secretariaTokens = new Set();
 const allowedStatuses = new Set(['Recebida', 'Em análise', 'Resolvida', 'Arquivada']);
 
 if (!fs.existsSync(DATA_DIR)) {
@@ -98,6 +112,17 @@ function requireAdmin(req, res, next) {
   return next();
 }
 
+function requireSecretaria(req, res, next) {
+  const authorization = req.get('authorization') || '';
+  const token = authorization.startsWith('Bearer ') ? authorization.slice(7) : '';
+
+  if (!token || !secretariaTokens.has(token)) {
+    return res.status(401).json({ message: 'Acesso da Secretaria não autorizado.' });
+  }
+
+  return next();
+}
+
 app.post('/api/admin/login', (req, res) => {
   const { login, password } = req.body;
 
@@ -114,6 +139,41 @@ app.post('/api/admin/logout', requireAdmin, (req, res) => {
   const token = (req.get('authorization') || '').slice(7);
   adminTokens.delete(token);
   return res.json({ message: 'Sessão encerrada.' });
+});
+
+app.post('/api/secretaria/login', (req, res) => {
+  const { login, password } = req.body;
+
+  if (login !== SECRETARIA_LOGIN || password !== SECRETARIA_PASSWORD) {
+    return res.status(401).json({ message: 'Login ou senha inválidos.' });
+  }
+
+  const token = crypto.randomBytes(32).toString('hex');
+  secretariaTokens.add(token);
+  return res.json({ token });
+});
+
+app.post('/api/secretaria/logout', requireSecretaria, (req, res) => {
+  const token = (req.get('authorization') || '').slice(7);
+  secretariaTokens.delete(token);
+  return res.json({ message: 'Sessão encerrada.' });
+});
+
+app.get('/api/secretaria/reports', requireSecretaria, (req, res) => {
+  const query = `
+    SELECT id, code, school, incident, description, status, evidence, created_at
+    FROM reports
+    ORDER BY datetime(created_at) DESC
+  `;
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error('Erro ao listar relatos da Secretaria:', err.message);
+      return res.status(500).json({ message: 'Erro interno ao listar relatos.' });
+    }
+
+    return res.json(rows);
+  });
 });
 
 app.get('/api/admin/reports', requireAdmin, (req, res) => {
