@@ -20,6 +20,8 @@ O objetivo deste projeto é oferecer aos estudantes um canal seguro e confidenci
 - `js/admin.js` - Autenticação, carregamento do dashboard, atualização de status e exportação CSV.
 - `secretaria.html` - Painel da Secretaria com indicadores por escola e consulta dos detalhes dos relatos.
 - `js/secretaria.js` - Autenticação, filtros, indicadores da rede e visualização de detalhes.
+- `Iniciar Acolhe Escola.bat` - Inicializador Windows com preparação automática do Node.js portátil.
+- `preparar-node.ps1` - Baixa e prepara o Node.js sem instalá-lo no computador.
 - `css/admin.css` - Estilos responsivos da área administrativa.
 - `server.js` - API Express, autenticação administrativa, SQLite e upload de evidências.
 - `render.yaml` - Blueprint para criar o serviço Node.js no Render com armazenamento persistente.
@@ -50,7 +52,7 @@ O objetivo deste projeto é oferecer aos estudantes um canal seguro e confidenci
 
 ## Como rodar localmente
 
-No Windows, basta dar dois cliques em `Iniciar Acolhe Escola.bat`. Ele inicia o servidor e abre o navegador. Mantenha aberta a janela do servidor enquanto estiver usando o sistema.
+No Windows, basta dar dois cliques em `Iniciar Acolhe Escola.bat`. Se o Node.js nao estiver instalado, o inicializador baixa uma versao portatil para a pasta do projeto, sem instalar nada no Windows. A primeira execucao precisa de internet para baixar o Node.js e as dependencias. Depois, o inicializador abre o navegador. Mantenha aberta a janela do servidor enquanto estiver usando o sistema.
 
 1. Abra a pasta do projeto (`d:\programacao\acolhe-escola`) em um terminal.
 2. Execute `npm install` para instalar as dependências.
