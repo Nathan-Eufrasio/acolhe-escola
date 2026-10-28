@@ -1,0 +1,44 @@
+# Acolhe Escola - ambiente de desenvolvimento
+# Sobe duas "caixas" (conteineres):
+#   1. mysql       -> o banco de dados
+#   2. phpmyadmin  -> tela no navegador para ver o banco
+#
+# O backend (Node.js) roda fora do Docker, direto no seu computador.
+#
+# Comandos:
+#   docker compose up -d     -> liga tudo (em segundo plano)
+#   docker compose down      -> desliga tudo (os dados continuam salvos)
+#   docker compose down -v   -> desliga e APAGA o banco (recria do zero no proximo "up")
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: acolhe-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      # "127.0.0.1" = so o seu computador acessa o banco, ninguem da rede
+      - "127.0.0.1:3306:3306"
+    volumes:
+      # Onde os dados ficam guardados (sobrevive ao desligar)
+      - dados_mysql:/var/lib/mysql
+      # Na PRIMEIRA vez que o banco sobe, o MySQL roda este script e cria as tabelas
+      - ./database/bd.sql:/docker-entrypoint-initdb.d/01-bd.sql:ro
+
+  phpmyadmin:
+    image: phpmyadmin:5.2
+    container_name: acolhe-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql   # nome da caixa do banco, definida acima
+    ports:
+      - "127.0.0.1:8080:80"   # abra http://localhost:8080
+    depends_on:
+      - mysql
+
+volumes:
+  dados_mysql:
