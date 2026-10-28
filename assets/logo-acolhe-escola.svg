@@ -1,0 +1,52 @@
+<svg width="1200" height="420" viewBox="0 0 1200 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shieldBlue" x1="120" y1="30" x2="420" y2="350" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B3C8B"/>
+      <stop offset="1" stop-color="#1F65D6"/>
+    </linearGradient>
+    <linearGradient id="shieldBlue2" x1="120" y1="90" x2="420" y2="330" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1C65D7"/>
+      <stop offset="1" stop-color="#0D3E8E"/>
+    </linearGradient>
+    <linearGradient id="greenBar" x1="130" y1="220" x2="380" y2="260" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1FB572"/>
+      <stop offset="1" stop-color="#1AA76A"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(-10, 0)">
+    <path d="M260 38L430 100V208C430 289 383 334 316 372C282 392 241 366 226 343C179 279 115 280 78 276C62 274 48 267 40 258V110L260 38Z" fill="url(#shieldBlue)"/>
+    <path d="M220 48L382 100V214C382 274 352 312 309 341C282 358 248 345 235 327C196 281 143 282 104 280C90 280 76 274 66 265V110L220 48Z" fill="url(#shieldBlue2)" opacity="0.92"/>
+
+    <path d="M95 225C122 213 163 213 190 225C205 231 220 233 235 230C247 227 257 220 263 210L290 240L256 245C234 249 221 260 210 275C189 305 155 310 130 302C110 296 96 287 82 272L84 245L95 225Z" fill="#C9E9FF" fill-opacity="0.64"/>
+
+    <circle cx="148" cy="152" r="31" fill="#E4F0FF"/>
+    <circle cx="210" cy="134" r="31" fill="#E4F0FF"/>
+    <circle cx="270" cy="156" r="31" fill="#E4F0FF"/>
+
+    <circle cx="148" cy="152" r="20" fill="#3B78E7"/>
+    <circle cx="210" cy="134" r="20" fill="#3B78E7"/>
+    <circle cx="270" cy="156" r="20" fill="#3B78E7"/>
+
+    <path d="M221 181C252 181 286 197 285 230C284 255 259 281 211 281C162 281 138 258 138 228C138 195 171 181 221 181Z" fill="#E4F0FF"/>
+
+    <path d="M192 180C205 186 217 191 226 196C232 200 235 208 234 215C233 232 221 239 210 245C196 252 169 245 160 232C149 219 153 204 167 194C175 189 184 184 192 180Z" fill="#6AB0FF" opacity="0.27"/>
+
+    <path d="M240 175L378 175C374 226 338 246 306 264C273 281 247 295 230 318L214 294C230 266 240 251 264 228C289 204 312 192 340 186L240 175Z" fill="url(#greenBar)" opacity="0.92"/>
+
+    <g transform="translate(320 145)">
+      <path d="M0 42C0 19 19 0 42 0H58C81 0 100 19 100 42V56C100 70 89 81 75 81H74C56 81 42 92 36 108L32 118C29 125 22 130 14 130H13C5 130 0 125 0 117V42Z" fill="#1F9E6E"/>
+      <path d="M44 18L56 18C66 18 74 26 74 36V43H38V36C38 26 46 18 56 18H44Z" fill="#EAFBF5" opacity="0.9"/>
+      <path d="M36 50H74V86C74 103 60 116 42 116H38C20 116 6 103 6 86V50H36Z" fill="#EAFBF5" opacity="0.9"/>
+      <path d="M93.5 31.5L107.5 17.5C111.9 13.1 119.6 13.1 124 17.5L127.5 21L108.5 40L93.5 31.5Z" fill="#EAFBF5" opacity="0.9"/>
+      <path d="M132 38L145 51L117 79L104 66L132 38Z" fill="#EAFBF5" opacity="0.9"/>
+    </g>
+  </g>
+
+  <g transform="translate(470, 30)">
+    <text x="0" y="144" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="150" fill="#0F55C7" letter-spacing="-7">Acolhe</text>
+    <text x="0" y="300" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="150" fill="#15A66F" letter-spacing="-7">Escola</text>
+    <rect x="4" y="322" width="420" height="10" rx="5" fill="#1E6BE2" opacity="0.8"/>
+    <text x="0" y="380" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="600" fill="#2E456B" letter-spacing="-1">Fala segura para uma escola acolhedora</text>
+  </g>
+</svg>

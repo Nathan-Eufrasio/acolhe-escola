@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: acolhe-escola
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    disk:
+      name: acolhe-escola-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: STORAGE_DIR
+        value: /var/data
+      - key: ADMIN_LOGIN
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SECRETARIA_LOGIN
+        sync: false
+      - key: SECRETARIA_PASSWORD
+        sync: false
