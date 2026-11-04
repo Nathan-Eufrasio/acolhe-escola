@@ -48,6 +48,22 @@ class Instituicao {
     );
     return linhas[0] || null;
   }
+
+    // Lista as escolas com a contagem de relatos (painel da Secretaria)
+  static async listarComIndicadores(dias) {
+    const [linhas] = await db.query(
+      `SELECT i.id, i.nome, i.email, i.cidade,
+              COUNT(r.id) AS total,
+              COUNT(CASE WHEN r.data_envio >= NOW() - INTERVAL ? DAY THEN 1 END) AS recentes,
+              COUNT(CASE WHEN r.status <> 'concluido' THEN 1 END) AS emAberto
+         FROM instituicao i
+         LEFT JOIN relato r ON r.id_instituicao = i.id
+        GROUP BY i.id, i.nome, i.email, i.cidade
+        ORDER BY i.cidade, i.nome`,
+      [dias]
+    );
+    return linhas;
+  }
 }
 
 module.exports = Instituicao;

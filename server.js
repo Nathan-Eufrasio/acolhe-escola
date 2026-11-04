@@ -13,6 +13,8 @@ const express = require('express');
 const path = require('path');
 const publicRoutes = require('./src/routes/publicRoutes');
 const authRoutes = require('./src/routes/authRoutes');
+const secretariaRoutes = require('./src/routes/secretariaRoutes');
+const adminRoutes = require('./src/routes/adminRoutes');
 
 const app = express();
 const PORTA = process.env.PORT || 3000;
@@ -26,6 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Rotas da API
 app.use('/api', publicRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/secretaria', secretariaRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Rota que nao existe
 app.use('/api', (req, res) => {

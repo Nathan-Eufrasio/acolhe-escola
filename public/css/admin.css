@@ -60,7 +60,7 @@ button, input {
 }
 
 .brand-logo {
-  width: min(100%, 270px);
+  width: min(100%, 330px);
   height: auto;
   display: block;
   filter: drop-shadow(0 10px 18px rgba(18, 59, 135, 0.08));
@@ -240,6 +240,78 @@ button, input {
   line-height: 1.5;
 }
 
+/* Escolha do tipo de acesso: a opcao atual fica azul */
+.tipo-acesso {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 20px;
+  background: var(--primary-soft);
+  border-radius: 999px;
+}
+
+.tipo-acesso a {
+  padding: 10px 12px;
+  border-radius: 999px;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary-deep);
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tipo-acesso a:hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.tipo-acesso a.ativo {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 8px 16px rgba(31, 95, 231, 0.22);
+}
+
+/* Linha da senha: rotulo de um lado, "Esqueci minha senha" do outro */
+.linha-senha {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.link-esqueci {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.link-esqueci:hover {
+  text-decoration: underline;
+}
+
+.aviso-senha {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--primary-soft);
+  color: var(--primary-deep);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+/* Botoes lado a lado na tabela de acessos */
+.acoes-admin {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 .portal-link {
   margin: 16px 0 0;
   text-align: center;
@@ -315,6 +387,35 @@ button, input {
   background: transparent;
   color: var(--muted);
   padding: 9px 12px;
+}
+
+/* Botao Voltar em formato de pilula, no azul do projeto */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  background: var(--primary);
+  color: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 6px 14px rgba(31, 95, 231, 0.22);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.back-btn:hover {
+  background: var(--primary-deep);
+  transform: translateY(-1px);
+}
+
+.back-btn:focus-visible {
+  outline: 3px solid rgba(31, 95, 231, 0.3);
+  outline-offset: 2px;
 }
 
 .hidden {
@@ -850,6 +951,11 @@ tbody tr:last-child td {
   border-top: 1px solid var(--line);
 }
 
+/* Espaco entre o texto do relato e as providencias */
+.detail-description + .detail-description {
+  margin-top: 18px;
+}
+
 .detail-description h3 {
   margin: 0 0 8px;
   font-size: 0.95rem;
@@ -915,7 +1021,7 @@ tbody tr:last-child td {
   }
 
   .brand-logo {
-    width: min(100%, 260px);
+    width: min(100%, 300px);
   }
 
   .admin-header,
@@ -952,4 +1058,166 @@ tbody tr:last-child td {
     right: 14px;
     bottom: 14px;
   }
+}
+
+.status-alta {
+  background: rgba(220, 38, 38, 0.12);
+  color: #b91c1c;
+}
+
+/* Formularios de cadastro do painel da Secretaria */
+.form-cadastro {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  align-items: end;
+}
+
+@media (max-width: 760px) {
+  .form-cadastro {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-cadastro select {
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.42);
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 18px;
+  padding: 14px 16px;
+  font: inherit;
+  color: var(--text);
+}
+
+.form-cadastro + .table-wrap {
+  margin-top: 18px;
+}
+
+/* Painel da escola */
+.painel-escola {
+  display: grid;
+  gap: 18px;
+}
+
+.painel-escola .content-header,
+.painel-escola .stats-grid {
+  margin-bottom: 0;
+}
+
+.alerta-recorrencia {
+  padding: 14px 18px;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: 16px;
+  background: rgba(220, 38, 38, 0.08);
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.texto-curto {
+  max-width: 380px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.botao-editar {
+  font-size: 1.2rem;
+}
+
+/* Engrenagem sem sublinhado */
+.botao-editar:hover {
+  text-decoration: none;
+}
+
+/* Tela de gerenciar um relato */
+.relato-dados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin: 0 0 16px;
+}
+
+.relato-dados dt,
+.relato-titulo {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.relato-dados dd {
+  margin: 4px 0 0;
+  font-weight: 600;
+}
+
+.relato-texto {
+  margin: 8px 0 0;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.grupo-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 0;
+  border: none;
+}
+
+.grupo-status legend,
+.form-relato > label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.grupo-status input {
+  position: absolute;
+  opacity: 0;
+}
+
+.grupo-status span {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  border-radius: 14px;
+  background: #f1f5f9;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.grupo-status input:checked + span {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+.grupo-status input:focus-visible + span {
+  outline: 3px solid rgba(31, 95, 231, 0.3);
+}
+
+.form-relato textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.42);
+  border-radius: 18px;
+  font: inherit;
+  color: var(--text);
+  resize: vertical;
+}
+
+.form-relato .primary-btn {
+  margin-top: 14px;
+}
+
+.lista-providencias {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.lista-providencias small {
+  color: var(--muted);
 }

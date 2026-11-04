@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Painel Administrativo | Acolhe Escola</title>
+    <title>Painel da Escola | Acolhe Escola</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.ico" sizes="any" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -16,236 +18,158 @@
           <img src="assets/logo-acolhe-escola.svg" alt="Logo Acolhe Escola" class="brand-logo" />
         </div>
         <div class="header-actions">
-          <span class="chip chip-success">Sistema ativo</span>
+          <a href="index.html" class="back-btn">← Voltar ao início</a>
         </div>
       </header>
 
-      <section id="login-panel" class="login-panel">
+      <!-- Tela de login -->
+      <section id="admin-login-panel" class="login-panel">
         <div class="login-visual">
-          <div class="login-icon">🔐</div>
-          <h2>Área do administrador</h2>
-          <p>Faça login para visualizar relatos, acompanhar pendências e responder a alertas institucionais.</p>
+          <div class="login-icon" aria-hidden="true">🔐</div>
+          <h2>Área da escola</h2>
+          <p>Acompanhe os relatos recebidos pela sua escola e registre as providências tomadas.</p>
           <ul>
             <li>Relatos anônimos</li>
-            <li>Controle por instituição</li>
-            <li>Gestão de alertas</li>
+            <li>Só os relatos da sua escola</li>
+            <li>Registro de providências</li>
           </ul>
         </div>
 
         <div class="login-card">
           <div class="card-head">
-            <span class="small-label">Acesso seguro</span>
+            <!-- Troca entre o login da escola e o da Secretaria -->
+            <nav class="tipo-acesso" aria-label="Tipo de acesso">
+              <a href="admin.html" class="ativo" aria-current="page">Equipe escolar</a>
+              <a href="secretaria.html">Secretaria de Educação</a>
+            </nav>
             <h3>Entrar</h3>
-            <p class="login-hint">Use as credenciais fornecidas pela gestão da rede.</p>
+            <p class="login-hint">Use o e-mail e a senha criados pela Secretaria de Educação.</p>
           </div>
 
           <form id="admin-login-form" class="login-form">
             <div>
-              <label for="admin-login">Login</label>
-              <input id="admin-login" name="login" type="text" placeholder="admin" autocomplete="username" autocapitalize="none" required />
+              <label for="admin-email">E-mail</label>
+              <input id="admin-email" name="email" type="email" autocomplete="username" autocapitalize="none" required />
             </div>
-
             <div>
-              <label for="admin-password">Senha</label>
-              <input id="admin-password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required />
+              <div class="linha-senha">
+                <label for="admin-senha">Senha</label>
+                <button type="button" id="esqueci-senha" class="link-esqueci" aria-expanded="false" aria-controls="ajuda-senha">Esqueci minha senha</button>
+              </div>
+              <input id="admin-senha" name="senha" type="password" autocomplete="current-password" required />
             </div>
-
+            <p id="ajuda-senha" class="aviso-senha hidden">
+              Por segurança, só a <strong>Secretaria de Educação</strong> pode trocar a senha da equipe escolar.
+              Peça a ela para redefinir a sua senha e depois entre com a senha nova.
+            </p>
             <button type="submit" class="primary-btn">Entrar no painel</button>
           </form>
-          <p class="portal-link"><a href="secretaria.html">Acesso da Secretaria de Educação</a></p>
         </div>
       </section>
 
-      <section id="admin-dashboard" class="dashboard hidden">
-        <aside class="sidebar">
-          <div class="sidebar-brand">
-            <div class="mini-brand">A</div>
-            <div>
-              <p class="eyebrow">Admin</p>
-              <strong>Acolhe Escola</strong>
-            </div>
+      <!-- Painel da escola (aparece depois do login) -->
+      <main id="admin-painel" class="content painel-escola hidden">
+        <div class="content-header">
+          <div>
+            <p id="escola-cidade" class="eyebrow"></p>
+            <h2 id="escola-nome">Painel da escola</h2>
           </div>
+          <button id="admin-sair" type="button" class="secondary-btn">Sair</button>
+        </div>
 
-          <nav>
-            <button class="nav-item active" type="button" data-target="overview">Visão geral</button>
-            <button class="nav-item" type="button" data-target="reports">Relatos</button>
-            <button class="nav-item" type="button" data-target="institutions">Instituições</button>
-            <button class="nav-item" type="button" data-target="alerts">Alertas</button>
-            <button class="nav-item" type="button" data-target="settings">Configurações</button>
-          </nav>
-        </aside>
+        <!-- Cartoes com os numeros da escola -->
+        <div class="stats-grid">
+          <article class="stat-card accent-blue">
+            <div class="stat-top"><span class="stat-icon" aria-hidden="true">📋</span><span class="stat-tag">Total</span></div>
+            <strong id="stat-total">0</strong>
+            <p>Relatos recebidos</p>
+          </article>
+          <article class="stat-card accent-red">
+            <div class="stat-top"><span class="stat-icon" aria-hidden="true">📅</span><span class="stat-tag">30 dias</span></div>
+            <strong id="stat-recentes">0</strong>
+            <p>Relatos nos últimos 30 dias</p>
+          </article>
+          <article class="stat-card accent-gold">
+            <div class="stat-top"><span class="stat-icon" aria-hidden="true">🆕</span><span class="stat-tag">Novos</span></div>
+            <strong id="stat-novos">0</strong>
+            <p>Aguardando análise</p>
+          </article>
+          <article class="stat-card accent-green">
+            <div class="stat-top"><span class="stat-icon" aria-hidden="true">🔎</span><span class="stat-tag">Em análise</span></div>
+            <strong id="stat-analise">0</strong>
+            <p>Sendo acompanhados</p>
+          </article>
+        </div>
 
-        <main class="content">
-          <div class="content-header">
-            <div>
-              <p class="eyebrow">Dashboard</p>
-              <h2>Resumo da rede escolar</h2>
-            </div>
-            <button id="logout-button" type="button" class="secondary-btn">Sair</button>
+        <!-- Faixa de alerta (so aparece com recorrencia alta) -->
+        <p id="alerta-recorrencia" class="alerta-recorrencia hidden">
+          ⚠️ Recorrência acima do limite (5 ou mais relatos em 30 dias). Esta escola aparece em alerta no painel da Secretaria de Educação.
+        </p>
+
+        <!-- Tabela de relatos -->
+        <section class="data-panel">
+          <div class="panel-head">
+            <h3>Relatos recebidos</h3>
+            <button id="admin-atualizar" type="button" class="ghost-btn">Atualizar</button>
           </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Data</th><th>Relato</th><th>Categoria</th><th>Status</th><th>Editar</th></tr>
+              </thead>
+              <tbody id="corpo-relatos"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+      
+            <!-- Tela de gerenciar um relato (abre pela engrenagem) -->
+      <main id="tela-relato" class="content painel-escola hidden">
+        <div class="content-header">
+          <div>
+            <p class="eyebrow">Protocolo</p>
+            <h2 id="relato-codigo"></h2>
+          </div>
+          <button id="relato-voltar" type="button" class="back-btn">← Voltar</button>
+        </div>
 
-          <section class="content-section" data-section="overview">
-            <section class="welcome-panel">
-              <div>
-                <p class="eyebrow">Menu inicial</p>
-                <h3>Bem-vindo(a), gestor escolar</h3>
-                <p>Centralize relatos, acompanhe alertas e fortaleça a segurança e o acolhimento em sua rede.</p>
-              </div>
-              <div class="welcome-tools">
-                <button type="button" class="tool-pill">Relatos</button>
-                <button type="button" class="tool-pill">Instituições</button>
-                <button type="button" class="tool-pill">Alertas</button>
-              </div>
-            </section>
+        <!-- Dados do relato -->
+        <section class="data-panel">
+          <dl class="relato-dados">
+            <div><dt>Data</dt><dd id="relato-data"></dd></div>
+            <div><dt>Categoria</dt><dd id="relato-categoria"></dd></div>
+          </dl>
+          <h3 class="relato-titulo">Relato</h3>
+          <p id="relato-descricao" class="relato-texto"></p>
+        </section>
 
-            <div class="stats-grid">
-              <article class="stat-card accent-blue">
-                <div class="stat-top">
-                  <span class="stat-icon">📊</span>
-                  <span class="stat-tag">Total</span>
-                </div>
-                <strong id="stat-total">0</strong>
-                <p>Relatos registrados</p>
-              </article>
+        <!-- Status e nova providencia -->
+        <section class="data-panel">
+          <form id="form-relato" class="form-relato">
+            <fieldset class="grupo-status">
+              <legend>Status</legend>
+              <label><input type="radio" name="status" value="novo" /><span>Novo</span></label>
+              <label><input type="radio" name="status" value="em_analise" /><span>Em análise</span></label>
+              <label><input type="radio" name="status" value="concluido" /><span>Concluído</span></label>
+            </fieldset>
 
-              <article class="stat-card accent-gold">
-                <div class="stat-top">
-                  <span class="stat-icon">⏳</span>
-                  <span class="stat-tag">Pendentes</span>
-                </div>
-                <strong id="stat-pending">0</strong>
-                <p>Aguardando análise</p>
-              </article>
+            <label for="relato-providencia">Registrar providência</label>
+            <textarea id="relato-providencia" rows="4" maxlength="2000"
+              placeholder="Descreva as providências adotadas pela escola. O aluno verá este texto ao consultar o código."></textarea>
 
-              <article class="stat-card accent-green">
-                <div class="stat-top">
-                  <span class="stat-icon">✅</span>
-                  <span class="stat-tag">Resolvidos</span>
-                </div>
-                <strong id="stat-resolved">0</strong>
-                <p>Casos encerrados</p>
-              </article>
+            <button type="submit" class="primary-btn">Salvar alterações</button>
+          </form>
+        </section>
 
-              <article class="stat-card accent-red">
-                <div class="stat-top">
-                  <span class="stat-icon">⚠️</span>
-                  <span class="stat-tag">Alertas</span>
-                </div>
-                <strong id="stat-alerts">0</strong>
-                <p>Alertas ativos</p>
-              </article>
-            </div>
+        <!-- Historico de providencias -->
+        <section class="data-panel">
+          <div class="panel-head">
+            <h3>Providências registradas</h3>
+          </div>
+          <ul id="lista-providencias" class="lista-providencias"></ul>
+        </section>
+      </main>
 
-            <div class="panel-grid">
-              <section class="data-panel large-panel">
-                <div class="panel-head">
-                  <h3>Relatos recentes</h3>
-                  <button type="button" class="ghost-btn">Exportar</button>
-                </div>
-
-                <div class="table-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Escola</th>
-                        <th>Incidente</th>
-                        <th>Data</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody id="reports-table-body"></tbody>
-                  </table>
-                </div>
-              </section>
-
-              <aside class="data-panel side-panel">
-                <div class="panel-head">
-                  <h3>Ações rápidas</h3>
-                </div>
-
-                <div class="quick-actions">
-                  <button type="button" class="action-card">
-                    <span class="action-icon">📥</span>
-                    <div>
-                      <strong>Receber relatos</strong>
-                      <small>Visualizar novos registros</small>
-                    </div>
-                  </button>
-
-                  <button type="button" class="action-card">
-                    <span class="action-icon">🧾</span>
-                    <div>
-                      <strong>Gerar relatório</strong>
-                      <small>Resumo da semana</small>
-                    </div>
-                  </button>
-
-                  <button type="button" class="action-card">
-                    <span class="action-icon">📣</span>
-                    <div>
-                      <strong>Alertas</strong>
-                      <small>Notificações urgentes</small>
-                    </div>
-                  </button>
-                </div>
-              </aside>
-            </div>
-          </section>
-
-          <section class="content-section hidden" data-section="reports">
-            <div class="subpage-card">
-              <div class="panel-head">
-                <h3>Gestão de relatos</h3>
-                <button type="button" class="ghost-btn" data-refresh-reports>Atualizar</button>
-              </div>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Código</th>
-                      <th>Escola</th>
-                      <th>Incidente</th>
-                      <th>Status</th>
-                      <th>Data</th>
-                    </tr>
-                  </thead>
-                  <tbody id="all-reports-table-body"></tbody>
-                </table>
-              </div>
-            </div>
-          </section>
-
-          <section class="content-section hidden" data-section="institutions">
-            <div class="subpage-card">
-              <div class="panel-head">
-                <h3>Instituições vinculadas</h3>
-              </div>
-              <div id="institutions-list" class="subpage-list"></div>
-            </div>
-          </section>
-
-          <section class="content-section hidden" data-section="alerts">
-            <div class="subpage-card">
-              <div class="panel-head">
-                <h3>Alertas críticos</h3>
-              </div>
-              <div id="alerts-list" class="subpage-list"></div>
-            </div>
-          </section>
-
-          <section class="content-section hidden" data-section="settings">
-            <div class="subpage-card">
-              <div class="panel-head">
-                <h3>Configurações gerais</h3>
-              </div>
-              <div class="settings-box">
-                <p class="settings-description">As credenciais administrativas são definidas no servidor pelas variáveis <strong>ADMIN_LOGIN</strong> e <strong>ADMIN_PASSWORD</strong>.</p>
-                <p class="settings-description">Os relatos exibidos neste painel são carregados diretamente do banco SQLite do sistema.</p>
-              </div>
-            </div>
-          </section>
-        </main>
-      </section>
     </div>
 
     <script src="js/admin.js"></script>
