@@ -11,6 +11,7 @@ if (!process.env.JWT_SECRET) {
 
 const express = require('express');
 const path = require('path');
+const db = require('./src/config/db');
 const publicRoutes = require('./src/routes/publicRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 const secretariaRoutes = require('./src/routes/secretariaRoutes');
@@ -21,6 +22,27 @@ const PORTA = process.env.PORT || 3000;
 
 // Permite receber dados em JSON
 app.use(express.json());
+
+// O Render so considera o servico pronto quando o banco e o esquema existem
+app.get('/health', async (req, res) => {
+  try {
+    const [linhas] = await db.query(
+      `SELECT COUNT(*) AS total
+         FROM information_schema.tables
+        WHERE table_schema = DATABASE()
+          AND table_name IN ('instituicao', 'administrador', 'secretaria_educacao', 'relato', 'providencia')`
+    );
+
+    if (Number(linhas[0].total) !== 5) {
+      return res.status(503).json({ status: 'unavailable' });
+    }
+
+    res.json({ status: 'ok' });
+  } catch (erro) {
+    console.error('Verificacao de saude do banco falhou:', erro);
+    res.status(503).json({ status: 'unavailable' });
+  }
+});
 
 // Deixa so a pasta public visivel no navegador
 app.use(express.static(path.join(__dirname, 'public')));

@@ -37,7 +37,7 @@ Esta configuracao usa o Render para o app e o TiDB Cloud Starter como banco comp
 5. Gere uma chave exclusiva para `JWT_SECRET` localmente com `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` e cadastre o resultado no Render. Nunca coloque essa chave, senha do banco ou credenciais no GitHub.
 6. Depois do deploy, crie a conta inicial da Secretaria executando `node scripts/criarSecretaria.js "Nome" email senha` em uma copia local do projeto configurada para apontar ao banco remoto, com `DB_SSL=true` no `.env`. Nao compartilhe os dados de conexao nem use uma senha real de outros servicos.
 
-O endereco publico aparece no painel do Render quando o deploy terminar. Se o servico ficar inativo, o primeiro acesso pode demorar enquanto ele inicia. Para uso real, migre para hospedagem com persistencia, backups e controles de acesso apropriados antes de inserir qualquer dado pessoal.
+O Render so considera o servico pronto quando `/health` confirma a conexao e as cinco tabelas essenciais do banco. O endereco publico aparece no painel do Render quando o deploy terminar. Se o servico ficar inativo, o primeiro acesso pode demorar enquanto ele inicia. Para uso real, migre para hospedagem com persistencia, backups e controles de acesso apropriados antes de inserir qualquer dado pessoal.
 
 ## Estrutura (MVC)
 
