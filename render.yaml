@@ -2,24 +2,24 @@ services:
   - type: web
     name: acolhe-escola
     runtime: node
-    plan: starter
-    buildCommand: npm install
+    plan: free
+    buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /
-    disk:
-      name: acolhe-escola-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
-      - key: STORAGE_DIR
-        value: /var/data
-      - key: ADMIN_LOGIN
+      - key: DB_HOST
         sync: false
-      - key: ADMIN_PASSWORD
+      - key: DB_PORT
+        value: "4000"
+      - key: DB_NAME
+        value: AcolheEscola
+      - key: DB_USER
         sync: false
-      - key: SECRETARIA_LOGIN
+      - key: DB_PASSWORD
         sync: false
-      - key: SECRETARIA_PASSWORD
+      - key: DB_SSL
+        value: "true"
+      - key: JWT_SECRET
         sync: false

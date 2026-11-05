@@ -26,6 +26,19 @@ npm start                   (liga o backend)
 Na primeira vez, o MySQL roda o `database/bd.sql` sozinho e cria as tabelas.
 Para recriar o banco do zero (APAGA os dados): `docker compose down -v` e depois `docker compose up -d`.
 
+## Publicar uma demonstracao gratuita
+
+Esta configuracao usa o Render para o app e o TiDB Cloud Starter como banco compativel com MySQL. Os [planos gratuitos do Render](https://render.com/docs/free) podem dormir, ter limites de uso e sofrer interrupcoes; o Render tambem nao preserva arquivos locais. Use somente dados ficticios, nunca relatos reais de estudantes.
+
+1. Crie um cluster **MySQL-compatible** no [TiDB Cloud](https://tidbcloud.com/). O plano Starter tem cotas gratuitas mensais e pode bloquear novas conexoes ao atingir os limites; confira as [cotas atuais](https://docs.pingcap.com/tidbcloud/select-cluster-tier/).
+2. No SQL Editor do TiDB, execute o conteudo de `database/bd.sql` para criar o banco e as tabelas.
+3. Envie este repositorio ao GitHub e, no [Render](https://dashboard.render.com/), escolha **New > Blueprint** e conecte o repositorio. O Render le `render.yaml` e prepara o servico gratuito.
+4. Nos detalhes da conexao do TiDB, obtenha o host, usuario e senha. Configure `DB_HOST`, `DB_USER` e `DB_PASSWORD` nas variaveis de ambiente do servico Render. O Blueprint define `DB_PORT=4000`, `DB_NAME=AcolheEscola` e `DB_SSL=true`.
+5. Gere uma chave exclusiva para `JWT_SECRET` localmente com `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` e cadastre o resultado no Render. Nunca coloque essa chave, senha do banco ou credenciais no GitHub.
+6. Depois do deploy, crie a conta inicial da Secretaria executando `node scripts/criarSecretaria.js "Nome" email senha` em uma copia local do projeto configurada para apontar ao banco remoto, com `DB_SSL=true` no `.env`. Nao compartilhe os dados de conexao nem use uma senha real de outros servicos.
+
+O endereco publico aparece no painel do Render quando o deploy terminar. Se o servico ficar inativo, o primeiro acesso pode demorar enquanto ele inicia. Para uso real, migre para hospedagem com persistencia, backups e controles de acesso apropriados antes de inserir qualquer dado pessoal.
+
 ## Estrutura (MVC)
 
 ```
