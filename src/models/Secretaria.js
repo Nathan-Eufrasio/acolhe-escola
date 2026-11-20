@@ -21,6 +21,12 @@ class Secretaria {
     );
     return linhas[0] || null;
   }
+
+  // Lista os e-mails da Secretaria (para o alerta de recorrencia)
+  static async listarEmails() {
+    const [linhas] = await db.query('SELECT email FROM secretaria_educacao');
+    return linhas.map((linha) => linha.email);
+  }
 }
 
 module.exports = Secretaria;

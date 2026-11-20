@@ -39,6 +39,13 @@ Esta configuracao usa o Render para o app e o TiDB Cloud Starter como banco comp
 
 O Render so considera o servico pronto quando `/health` confirma a conexao e as cinco tabelas essenciais do banco. O endereco publico aparece no painel do Render quando o deploy terminar. Se o servico ficar inativo, o primeiro acesso pode demorar enquanto ele inicia. Para uso real, migre para hospedagem com persistencia, backups e controles de acesso apropriados antes de inserir qualquer dado pessoal.
 
+## Avisos por e-mail
+
+Quando um relato chega, a escola recebe um e-mail (sem o texto do relato e sem dados de quem relatou). Quando uma escola chega a 5 relatos em 30 dias, a Secretaria recebe um alerta de recorrencia.
+
+- **Para testar:** deixe `SMTP_HOST` vazio no `.env`. O e-mail aparece no terminal do `npm start`.
+- **Para enviar de verdade (Gmail):** ative a verificacao em duas etapas na conta, crie uma *senha de app* e preencha no `.env`: `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=587`, `SMTP_USER` (o e-mail) e `SMTP_PASS` (a senha de app).
+
 ## Estrutura (MVC)
 
 ```

@@ -3,6 +3,7 @@
 const Relato = require('../models/Relato');
 const Instituicao = require('../models/Instituicao');
 const gerarCodigo = require('../utils/gerarCodigo');
+const { avisarNovoRelato } = require('../utils/avisos');
 
 // Tamanho minimo e maximo da descricao
 const MINIMO = 20;
@@ -42,6 +43,10 @@ async function enviar(req, res) {
       const codigo = gerarCodigo();
       try {
         await Relato.criar({ codigo, categoria, descricao: texto, idInstituicao: id });
+
+        // Avisos por e-mail (sem await: o aluno nao espera o e-mail sair)
+        avisarNovoRelato(instituicao, categoria);
+
         return res.status(201).json({ codigo });
       } catch (erro) {
         if (erro.code !== 'ER_DUP_ENTRY') throw erro;
